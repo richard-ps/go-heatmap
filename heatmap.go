@@ -15,11 +15,13 @@ import (
 type DataPoint interface {
 	X() float64
 	Y() float64
+	Size() int
 }
 
 type apoint struct {
 	x float64
 	y float64
+	size int
 }
 
 func (a apoint) X() float64 {
@@ -30,9 +32,13 @@ func (a apoint) Y() float64 {
 	return a.y
 }
 
+func (a apoint) Size() int {
+	return a.size
+}
+
 // P is a shorthand simple datapoint constructor.
-func P(x, y float64) DataPoint {
-	return apoint{x, y}
+func P(x, y float64, size int) DataPoint {
+	return apoint{x, y, size}
 }
 
 type limits struct {
@@ -64,13 +70,11 @@ func (l limits) Dy() float64 {
 func Heatmap(size image.Rectangle, points []DataPoint, dotSize int, opacity uint8,
 	scheme []color.Color) image.Image {
 
-	dot := mkDot(float64(dotSize))
-
 	limits := findLimits(points)
 
 	// Draw black/alpha into the image
 	bw := image.NewRGBA(size)
-	placePoints(size, limits, bw, points, dot)
+	placePoints(size, limits, bw, points)
 
 	rv := image.NewRGBA(size)
 
@@ -79,9 +83,10 @@ func Heatmap(size image.Rectangle, points []DataPoint, dotSize int, opacity uint
 	return rv
 }
 
-func placePoints(size image.Rectangle, limits limits,
-	bw *image.RGBA, points []DataPoint, dot draw.Image) {
+func placePoints(size image.Rectangle, limits limits, bw *image.RGBA, points []DataPoint) {
+	
 	for _, p := range points {
+		dot := mkDot(float64(p.Size()))
 		limits.placePoint(p, bw, dot)
 	}
 }
@@ -129,7 +134,7 @@ func findLimits(points []DataPoint) limits {
 		maxy = math.Max(p.Y(), maxy)
 	}
 
-	return limits{apoint{minx, miny}, apoint{maxx, maxy}}
+	return limits{apoint{minx, miny, 0}, apoint{maxx, maxy, 0}}
 }
 
 func mkDot(size float64) draw.Image {

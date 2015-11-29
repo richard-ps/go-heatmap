@@ -84,7 +84,7 @@ func adjustLimits(limits limits, size image.Rectangle, dotSize int) (rv limits) 
 	offx := (halfdot / float64(size.Dx()-dotSize)) * float64(limits.Dx())
 	offy := (halfdot / float64(size.Dy()-dotSize)) * float64(limits.Dy())
 
-	rv.Min = P(limits.Min.X()-offx, limits.Min.Y()-offy)
-	rv.Max = P(limits.Max.X()+offx, limits.Max.Y()+offy)
+	rv.Min = P(limits.Min.X()-offx, limits.Min.Y()-offy, 0)
+	rv.Max = P(limits.Max.X()+offx, limits.Max.Y()+offy, 0)
 	return
 }
