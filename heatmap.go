@@ -15,13 +15,13 @@ import (
 type DataPoint interface {
 	X() float64
 	Y() float64
-	Size() int
+	Size() uint8
 }
 
 type apoint struct {
-	x float64
-	y float64
-	size int
+	x    float64
+	y    float64
+	size uint8
 }
 
 func (a apoint) X() float64 {
@@ -32,12 +32,12 @@ func (a apoint) Y() float64 {
 	return a.y
 }
 
-func (a apoint) Size() int {
+func (a apoint) Size() uint8 {
 	return a.size
 }
 
 // P is a shorthand simple datapoint constructor.
-func P(x, y float64, size int) DataPoint {
+func P(x, y float64, size uint8) DataPoint {
 	return apoint{x, y, size}
 }
 
@@ -84,7 +84,7 @@ func Heatmap(size image.Rectangle, points []DataPoint, dotSize int, opacity uint
 }
 
 func placePoints(size image.Rectangle, limits limits, bw *image.RGBA, points []DataPoint) {
-	
+
 	for _, p := range points {
 		dot := mkDot(float64(p.Size()))
 		limits.placePoint(p, bw, dot)
